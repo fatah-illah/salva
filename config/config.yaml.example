@@ -1,0 +1,6 @@
+rabbitmq:
+  url: amqp://user:pass@localhost:5672/
+database:
+  url: postgres://user:pass@localhost:5432/app
+workers: 3 # Default worker
+jwt_secret: your_jwt_secret
