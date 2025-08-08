@@ -1,0 +1,172 @@
+basePath: /
+definitions:
+  domain.JSONB:
+    additionalProperties: {}
+    type: object
+  domain.Message:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      payload:
+        $ref: '#/definitions/domain.JSONB'
+      tenant_id:
+        type: string
+    type: object
+  domain.Tenant:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a multi-tenant messaging system.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Multi-Tenant Messaging System API
+  version: "1.0"
+paths:
+  /messages:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of messages with cursor-based pagination
+      parameters:
+      - description: Cursor for pagination
+        in: query
+        name: cursor
+        type: string
+      - description: Limit of messages per page (default 10)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/domain.Message'
+                type: array
+              next_cursor:
+                type: string
+            type: object
+        "400":
+          description: Invalid cursor or limit
+          schema:
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            type: object
+      summary: List messages with cursor pagination
+      tags:
+      - messages
+  /tenants:
+    post:
+      consumes:
+      - application/json
+      description: Create a new tenant with a unique ID and start a consumer for the
+        tenant
+      parameters:
+      - description: Tenant creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          properties:
+            name:
+              type: string
+          type: object
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/domain.Tenant'
+        "400":
+          description: Invalid request body
+          schema:
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            type: object
+      summary: Create a new tenant
+      tags:
+      - tenants
+  /tenants/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a tenant by ID and stop its consumer
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal server error
+          schema:
+            type: object
+      summary: Delete a tenant
+      tags:
+      - tenants
+  /tenants/{id}/config/concurrency:
+    put:
+      consumes:
+      - application/json
+      description: Update the number of workers for a tenant's consumer
+      parameters:
+      - description: Tenant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Concurrency configuration
+        in: body
+        name: config
+        required: true
+        schema:
+          properties:
+            workers:
+              type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Invalid request body
+          schema:
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            type: object
+      summary: Update the concurrency for a tenant
+      tags:
+      - tenants
+swagger: "2.0"
