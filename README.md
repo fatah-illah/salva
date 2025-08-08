@@ -86,6 +86,13 @@ docker-compose up -d
 go run cmd/server/main.go -migrate
 ```
 
+## Generate Swagger Documentation
+
+### Start Dependencies
+```bash
+swag init -g cmd/server/main.go --output cmd/server/docs
+```
+
 ### Start the Server
 ```bash
 go run cmd/server/main.go
@@ -110,14 +117,9 @@ Access API documentation at: `http://localhost:8080/swagger/index.html`
 
 ## Running Tests
 
-### Unit Tests
-```bash
-go test ./...
-```
-
 ### Integration Tests
 ```bash
-go test -tags=integration ./...
+go test -v ./internal/tests/
 ```
 
 ## Configuration Options
