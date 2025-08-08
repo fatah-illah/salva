@@ -49,8 +49,8 @@ graph TD
 
 1. **Clone the repository**:
 ```bash
-git clone https://github.com/your-username/multi-tenant-messaging.git
-cd multi-tenant-messaging
+git clone https://github.com/fatah-illah/salva.git
+cd salva
 ```
 
 2. **Install dependencies**:
